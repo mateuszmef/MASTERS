@@ -1,0 +1,82 @@
+THIS TEXT FILE CONTAINS MANUAL OF 3 PROGRAMS:
+ - gatherValues.py
+ - makePoly.py
+ - structureRefinement.py
+
+
+
+DESCRIPTION:
+
+	-> gatherValues.py
+
+		PROGRAM LOOKS FOR POSSIBLY TRUE HYDROGEN BONDS BETWEEN NUCLEOBASES INTO POOL OF RNA STRUCTURES
+		THE OUTPUT IS A TEXTFILE WITH THE LISTS WITH VALUES OF DISTANCES AND ANGLES
+		THE NAME OF TEXTFILE IS "anglesDistancesLists.py"
+		SINGLE LISTs "NAME" IS SPECIFIC DESCRIBING CONTACT
+
+		PROGRAM OUTPUTS TOO RESULT CSV FILE AND LOG FILE
+		
+
+	-> makePoly.py
+
+		PROGRAM IMPORTS "anglesDistancesLists.py"
+		THIS PROGRAM OUTPUTS "formulas_absolute_values.py" OR "formulas_polynomial.py" FILE
+		USER DECIDES WHICH OF THESE TWO FILES CREATE
+		EACH OF THESE TWO FILES ARE NECESSARY TO RUN FOR "structureRefinement.py"
+		EACH OF THESE TWO FILES CONTAINS DATA OF FITTED POLINOMIALS
+
+
+ 	-> structureRefinement.py
+
+		PROGRAM IMPORTS formulas_absolute_values AND formulas_polynomial.py
+		PROGRAM INPUTS PATH TO RNA STRUCTURE TO REFINE
+		PROGRAM OUTPUTS REFINED STRUCTURAL MODEL OF RNA IN ORDER TO STATISTICS
+
+
+
+
+REQUIREMENTS:
+
+	-> gatherValues.py
+
+		MODULES: BioPython, numpy
+		PATH TO THE PROGRAM: ClaRNA
+
+
+	-> makePoly.py
+
+		MODULES: numpy, scipy, pylab
+		!!! this program imports anglesDistancesList which is created by gatherValues.py 
+
+
+	-> structureRefinement.py
+
+		MODULES: BioPython, numpy, MATPLOTLIB, Axes3D
+		!!! this program imports formulas_absolute_values and formulas_polynomial when its run; these two modules
+				are created by makePoly.py program
+
+
+
+MANUAL:
+
+	-> gatherValues.py
+
+	!!! NECESSARY CUSTOMIZATION
+	LINE: 289 - path to the directory which containes all output files
+	LINE: 290 - path to the directory which containes PDB files with RNA structures
+	LINE: 298 - path to ClaRNA
+	LINE: 314 - distance
+
+	AFTER CUSTOMIZATION gatherValues.py IS READY TO RUN BY TYPING ./gatherValues.py IN THE TERMINAL
+
+
+	-> makePoly.py
+
+	
+	FOR HELP TYPE $./makePoly.py -h
+
+
+	-> structureRefinement.py
+
+	FOR HELP TYPE $./structureRefinement.py
+
