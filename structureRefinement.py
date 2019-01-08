@@ -7,8 +7,8 @@ import sys
 import numpy as np
 import matplotlib.pyplot as pl
 import time
-import formulas_absolute_values as fv
-import formulas_polynomial as fp
+import formulas_values_mc as fv
+import formulas_polynomial_mc as fp
 from mpl_toolkits.mplot3d import Axes3D
 
 
@@ -227,6 +227,32 @@ def makeFormula(name, slow):
 	return maxima
 
 
+# comparison of maximas values from Monte Carlo 'new_mc' with calculated maximas from polynomial  
+def compareMaximas(new_mc, old):
+
+	mb = [float(i) for i in old]
+	old = mb
+
+	if len(new_mc) == 2 and len(mb) == 0:
+		return []
+
+	elif len(new_mc) == 1 and len(mb) == 1 or len(new_mc) == 1 and len(mb) == 0:
+		return new_mc
+
+	elif len(new_mc) == 2 and len(old) == 1:
+		if abs(new_mc[0] - old[0]) < abs(new_mc[1] - old[0]):
+			return [new_mc[0]]
+		elif abs(new_mc[0] - old[0]) > abs(new_mc[1] - old[0]):
+			return [new_mc[1]]
+		else:
+			raise TypeError
+
+	elif len(new_mc) == 2 and len(old) == 2:
+		new_mc.sort()
+		return new_mc
+
+
+
 
 # refineDistance() gets list of two atoms to refine and proper distance to be set between these atoms; input - atoms, name of contact, dictionary with polinomial
 def refineDistanceValue(atoms, name, slow):		
@@ -234,6 +260,8 @@ def refineDistanceValue(atoms, name, slow):
 	A, B = [atoms[0], atoms[1]]
 
 	polin = np.poly1d(slow["polinomial"])
+	maximas_err = slow["maximas"]	# it is list with maksimas and its errors from Monte Carlo simulation
+	maximas_mc = [i[0] for i in maximas_err]
 
 	def checkDifference(value, lst):
 		final_dist = 0
@@ -262,15 +290,18 @@ def refineDistanceValue(atoms, name, slow):
 			l = i+lr
 
 			if polinomial(f) < polinomial(m) and polinomial(l) < polinomial(m) and minx <= m <= maxx:
-				maxima.append(i)
+				lstM.append(i)
 			else: pass
 
 	maxima = []
 	lookForMaxima(maxima, polin, slow["minx"], slow["maxx"])
 
+	maxima = compareMaximas(maximas_mc, maxima)
+
 	atomdist = A - B
 	print "\tDISTANCE VALUE", atomdist
 
+	
 	dist = "None"
 	if len(maxima) == 1:
 		dist = maxima[0]
@@ -432,6 +463,8 @@ def getAngleValue(atoms):
 def refineAngleValue(atoms, name, slow):		# function takes list of two atoms to refine and gives proper angle value to be set between these atoms
 
 	polin = np.poly1d(slow["polinomial"])
+	maximas_err = slow["maximas"]	# it is list with maksimas and its errors from Monte Carlo simulation
+	maximas_mc = [i[0] for i in maximas_err]
 
 	def checkDifference(value, lst):
 		final_angle = 0
@@ -465,6 +498,8 @@ def refineAngleValue(atoms, name, slow):		# function takes list of two atoms to 
 
 	maxima = []
 	lookForMaxima(maxima, polin, slow["minx"], slow["maxx"])
+
+	maxima = compareMaximas(maximas_mc, maxima)
 
 	angle = getAngleValue(atoms) 
 	print "\tANGLE VALUE", angle
@@ -604,9 +639,6 @@ def refineAngle(bond, sph, middle, refAngle):
 #		print "now angle - ",nowAngle, "ref Angle - ", refAngle, "actual Angle -", getAngleValue([A, D])
 		if round(refAngle, 0) == round(getAngleValue([A, D]), 0):
 			print "now angle - ",nowAngle, "ref Angle - ", refAngle, "actual Angle -", getAngleValue([A, D])
-			print A, D
-			print A - D		
-			print "\t\tFINISHED\n"
 			break
 
 
@@ -619,6 +651,7 @@ def refineAngle(bond, sph, middle, refAngle):
 	ax.scatter(A.coord[0], A.coord[1], A.coord[2], c='r', marker="o", s=80)
 	ax.scatter(D.coord[0], D.coord[1], D.coord[2], c='b', marker="o", s=80)
 ##	pl.show()
+	pl.close()
 
 
 
@@ -638,6 +671,7 @@ def moveMainTool(strName, strOut, methode):
 	print
 
 	for c in cR:
+		print "\n\nNEW CONTACT MANIPULATION\n"
 		print c
 		print [c["acc"], c["don"]], c["acc"].parent.resname, c["don"].parent.resname, c["acc"].parent.id[1], c["don"].parent.id[1]
 		print createName(c, "distance")
@@ -656,7 +690,6 @@ def moveMainTool(strName, strOut, methode):
 			actualAngle = getAngleValue([c["acc"], c["don"]])
 
 			prop = abs(properAngle - actualAngle) / 100
-			print "prop", prop
 	
 			sph =  createSphPoints(properDistance, prop, coordAndMiddle["coord"], coordAndMiddle["sphMiddle"])
 			refineAngle(c, sph["sphPoints"], coordAndMiddle["sphMiddle"], properAngle)
@@ -664,6 +697,8 @@ def moveMainTool(strName, strOut, methode):
 
 		except KeyError:
 			pass
+
+		print "FINISHED"
 	
 
 	io = PDBIO()
@@ -676,7 +711,7 @@ def moveMainTool(strName, strOut, methode):
 
 if __name__ == "__main__":
 	
-	err = """\n\t ERROR ERROR ERROR\n\nstructureRefinement.py requires path to structure to refine and declaration of polinomials to use\n\n\t$./structureRefinement.py <path to RNA structure> -option\n\n\toptions: -value or -poly\n"""
+	err = """\n\t ERROR ERROR ERROR\n\nstructureRefinement.py requires path to the structure to refine and declaration of polinomials to use\n\n\t$./structureRefinement.py <path to RNA structure> -option\n\n\toptions: -value or -poly\n"""
 
 	try:
 

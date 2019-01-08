@@ -45,14 +45,14 @@ REQUIREMENTS:
 
 	-> makePoly.py
 
-		MODULES: numpy, scipy, pylab
+		MODULES: numpy, scipy, pylab, time, sklearn
 		!!! this program imports anglesDistancesList which is created by gatherValues.py 
 
 
 	-> structureRefinement.py
 
 		MODULES: BioPython, numpy, MATPLOTLIB, Axes3D
-		!!! this program imports formulas_absolute_values and formulas_polynomial when its run; these two modules
+		!!! this program imports formulas_values_mc and formulas_polynomial_mc when its run; these two modules
 				are created by makePoly.py program
 
 

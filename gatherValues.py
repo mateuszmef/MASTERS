@@ -127,7 +127,7 @@ def countAngleAndDistance(bond, resultFile):
 
 	dist = abs(bond["acc"] - bond["don"])
 
-	angleR = calc_angle(vacc, vdon, vddon)
+	angleR = calc_angle(vacc, vddon, vdon)
 	angleD = angleR * 180 / np.pi
 	angle = str(angleD)
 
