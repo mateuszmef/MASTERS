@@ -20,7 +20,7 @@ DESCRIPTION:
 	-> makePoly.py
 
 		PROGRAM IMPORTS "anglesDistancesLists.py"
-		THIS PROGRAM OUTPUTS "formulas_absolute_values.py" OR "formulas_polynomial.py" FILE
+		THIS PROGRAM OUTPUTS "formulas_values_mc.py" OR "formulas_polynomial_mc.py" FILE
 		USER DECIDES WHICH OF THESE TWO FILES CREATE
 		EACH OF THESE TWO FILES ARE NECESSARY TO RUN FOR "structureRefinement.py"
 		EACH OF THESE TWO FILES CONTAINS DATA OF FITTED POLINOMIALS
